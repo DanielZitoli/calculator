@@ -42,14 +42,37 @@ body{
         margin: auto;
         justify-content: center;
         display: flex;
-
     }
 
     h2{
-        font-size: 40px;
+        font-size: 45px;
         margin: auto 0px;
         color: #ccc;
-        font-family: 'Courier New', Courier, monospace
+        font-family: 'Baloo Chettan 2', cursive;
+    }
+
+    .operator{
+        
+        background-color: #4765ff
+    }
+
+    .removes{
+        background-color: rgb(255, 119, 119);
+    }
+    .removes > h2{
+        color: black;
+    }
+
+    .screen{
+        justify-content: right;
+    }
+
+    p{
+        text-align: right;
+        font-family: 'Baloo Chettan 2', cursive;
+        font-size: 100px;
+        
+        margin: 0px 10px 10px 0px;
     }
 
     #clear{grid-area: clear}
