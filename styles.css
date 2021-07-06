@@ -41,8 +41,22 @@ body{
         border-radius: 50%;
         margin: auto;
         justify-content: center;
-        display: flex;
+        display: inline-block;
+        border: none;
+        font-size: 50px;
+        text-align: center;
+        margin: 0px auto ;
+        vertical-align: middle;
+        padding: 0px;
+        font-family: 'Baloo Chettan 2', cursive;
+        color: white;
     }
+
+    .transition{
+        transition: background-color 0.3s linear, color 0.3s linear; 
+    }
+
+
 
     h2{
         font-size: 45px;
@@ -54,12 +68,11 @@ body{
     .operator{
         
         background-color: #4765ff
+
     }
 
     .removes{
-        background-color: rgb(255, 119, 119);
-    }
-    .removes > h2{
+        background-color: #ff5050;
         color: black;
     }
 
@@ -71,7 +84,7 @@ body{
         text-align: right;
         font-family: 'Baloo Chettan 2', cursive;
         font-size: 100px;
-        
+        color: #ccc;
         margin: 0px 10px 10px 0px;
     }
 
