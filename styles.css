@@ -67,7 +67,8 @@ body{
 
     .operator{
         
-        background-color: #4765ff
+        background-color: #4765ff;
+        font-size: 60px;
 
     }
 
