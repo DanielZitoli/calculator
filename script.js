@@ -13,6 +13,7 @@ addEventListener('DOMContentLoaded', function(){
    
     function recordClick(id){
         if(id === 'clear'){
+            equalLastPressed = false;
             number1 = '0';
             Num1isNegative = false;
             number2 = '';
@@ -22,8 +23,10 @@ addEventListener('DOMContentLoaded', function(){
         }else if(id === 'delete'){
             if(operator){
                if(number2){
-                    if(number2 === '0'){
+                    if(number2 === '0' || number2 === '-0'){
 
+                    }else if(number2.length === 2 && number2[0] === '-'){
+                        number2 = '-0'
                     }else if(number2.length === 1){
                         number2 = '0';
                     }else{
@@ -31,8 +34,12 @@ addEventListener('DOMContentLoaded', function(){
                     }
                } 
             }else{
-                if(number1 === '0'){
+                if(number1 === '0' || number1 === '-0'){
 
+                }else if(number1.length === 2 && number1[0] === '-'){
+                    number1 = '-0'
+                }else if(number1.length === 1){
+                    number1 = '0';
                 }else{
                     number1 = number1.substring(0, number1.length-1)
                 }
@@ -48,16 +55,20 @@ addEventListener('DOMContentLoaded', function(){
             }
         }else if(id === 'plusminus'){
             if(operator){
-                if(Num2isNegative){
-                    Num2isNegative = false;
+                if(number2){
+                    if(number2[0] === '-'){
+                        number2 = number2.substriing(1);
+                    }else{
+                        number2 = '-' + number2
+                    } 
                 }else{
-                    Num2isNegative = true; 
+                    number2 = '-0'
                 }
             }else{
-                if(Num1isNegative){
-                    Num1isNegative = false;
+                if(number1[0] === '-'){
+                    number1 = number1.substriing(1);
                 }else{
-                    Num1isNegative = true; 
+                    number1 = '-' + number1
                 }
             }
         }else if(id === 'point'){
@@ -82,15 +93,19 @@ addEventListener('DOMContentLoaded', function(){
             if(operator){
                 if(number2 === '0'){
                     number2 = id;
+                }else if(number2 === '-0'){
+                    number2 = '-' + id
                 }else{
                     number2 = number2 + id;
                 }
             }else{
                 if(number1 === '0'){
                     number1 = id;
+                }else if(number1 === '-0'){
+                    number1 = '-' + id
                 }else if(equalLastPressed){
                     recordClick('clear');
-                    number1 = id;
+                    recordClick(id);
                 }else{
                     number1 = number1 + id;
                 }
@@ -124,24 +139,13 @@ addEventListener('DOMContentLoaded', function(){
         Num1isNegative = (answer < 0) ? true : false; 
         number2 = '';
         Num2isNegative = false
+        operator = '';
     }   
 
 
     function updateScreen(){
-        if(number2){
-            if(Num2isNegative){
-                screen.innerHTML = "-" + number2; 
-            }else{
-                screen.innerHTML = number2;
-            }
-        }else{
-            if(Num1isNegative){
-                screen.innerHTML = "-" + number1; 
-            }else{
-                screen.innerHTML = number1;
-            }
-        }
-        
+        let display = (number2) ? number2 : number1;
+        screen.innerHTML = display;
         
     }
 
