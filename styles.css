@@ -14,7 +14,8 @@ body{
 }
 
 .screen{
-    width: 480px;
+    max-width: 450px;
+    min-width: 450px;
     height: 130px; 
     margin: 30px 30px 10px;
     background-color: #555;
@@ -86,7 +87,7 @@ body{
         font-family: 'Baloo Chettan 2', cursive;
         font-size: 110px;
         color: #ccc;
-        margin: 0px 10px 10px 0px;
+        margin-top: 0px;
         outline: 0;
         border: 0;
         vertical-align: middle;

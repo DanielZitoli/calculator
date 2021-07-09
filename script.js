@@ -6,7 +6,8 @@ addEventListener('DOMContentLoaded', function(){
     let number2 = '';
     let Num2isNegative = false;
     let operator = '';
-    let equalLastPressed = false
+    let equalLastPressed = false;
+    let justCalculated = 0;
 
     let screen = document.querySelector('#screen');
 
@@ -21,29 +22,32 @@ addEventListener('DOMContentLoaded', function(){
             operator = '';
             
         }else if(id === 'delete'){
-            if(operator){
-               if(number2){
-                    if(number2 === '0' || number2 === '-0'){
+            if(!justCalculated){
+                if(operator){
+                if(number2){
+                        if(number2 === '0' || number2 === '-0'){
 
-                    }else if(number2.length === 2 && number2[0] === '-'){
-                        number2 = '-0'
-                    }else if(number2.length === 1){
-                        number2 = '0';
-                    }else{
-                        number2 = number2.substring(0, number2.length-1) 
-                    }
-               } 
-            }else{
-                if(number1 === '0' || number1 === '-0'){
-
-                }else if(number1.length === 2 && number1[0] === '-'){
-                    number1 = '-0'
-                }else if(number1.length === 1){
-                    number1 = '0';
+                        }else if(number2.length === 2 && number2[0] === '-'){
+                            number2 = '-0'
+                        }else if(number2.length === 1){
+                            number2 = '0';
+                        }else{
+                            number2 = number2.substr(0, number2.length-1) 
+                        }
+                } 
                 }else{
-                    number1 = number1.substring(0, number1.length-1)
+                    if(number1 === '0' || number1 === '-0'){
+
+                    }else if(number1.length === 2 && number1[0] === '-'){
+                        number1 = '-0'
+                    }else if(number1.length === 1){
+                        number1 = '0';
+                    }else{
+                        number1 = number1.substr(0, number1.length-1)
+                        console.log('hi')
+                    }
                 }
-            }
+            }else{justCalculated++}
         }else if(id === 'equal'){
             equalLastPressed = true;
             if(number2){
@@ -57,7 +61,7 @@ addEventListener('DOMContentLoaded', function(){
             if(operator){
                 if(number2){
                     if(number2[0] === '-'){
-                        number2 = number2.substriing(1);
+                        number2 = number2.substring(1);
                     }else{
                         number2 = '-' + number2
                     } 
@@ -66,7 +70,7 @@ addEventListener('DOMContentLoaded', function(){
                 }
             }else{
                 if(number1[0] === '-'){
-                    number1 = number1.substriing(1);
+                    number1 = number1.substring(1);
                 }else{
                     number1 = '-' + number1
                 }
@@ -111,6 +115,7 @@ addEventListener('DOMContentLoaded', function(){
                 }
             }
         }
+        if(justCalculated){justCalculated--};
         updateScreen();
     }
 
@@ -135,20 +140,118 @@ addEventListener('DOMContentLoaded', function(){
             answer = Num1 * Num2;
         }
 
-        number1 = answer//.toFixed(3);
+        number1 = answer;
         Num1isNegative = (answer < 0) ? true : false; 
         number2 = '';
         Num2isNegative = false
         operator = '';
+        justCalculated = 2;
     }   
 
 
     function updateScreen(){
-        let display = (number2) ? number2 : number1;
-        screen.innerHTML = display;
-        
+        let number = (number2) ? number2 : number1;
+        screen.innerHTML = displayNumber(number);
     }
 
+    function displayNumber(number){
+        //pointIsAt = (indexOfPoint(number)) ? number.indexOf('.') : false;
+        //startNumber = (number[0] === '-') ? 1 : 0
+        
+        //number = parseFloat(number);
+        //number.toFixed(4);
+        //number.toString();
+        
+        //console.log(number)
+        
+        
+        //wholePart = pointIsAt ? number.substring(0, pointIsAt) : number;
+        //decimalPart = pointIsAt ? number.substring(pointIsAt) : '';
+
+
+        number = parseFloat(number);
+        number = number.toFixed(4);
+        number = number.toString();
+        let wholePart = '', decimalPart = '', pointFound = false;
+        for(let i = 0; i < number.length; i++){
+            if(number[i] === '.'){pointFound = true};
+            if(pointFound){
+                decimalPart = decimalPart + number[i];
+            }else{
+                wholePart = wholePart + number[i];
+            }
+        }
+        wholeLength = wholePart.length;
+        console.log(wholeLength);
+       
+        screenNumber = '';
+
+        let len = wholePart.length;
+        for(let i = 0; i < len; i++){
+            screenNumber = screenNumber + wholePart[i];
+            if((len-i-1) % 3 == 0 && wholePart[i] !== '-' && i !== len-1){
+                screenNumber = screenNumber + ',';
+            }
+        }
+        
+        while(true){
+            if(decimalPart[decimalPart.length-1] === '.' || decimalPart[decimalPart.length-1] === '0'){
+                decimalPart = decimalPart.substring(0, decimalPart.length-1);
+            }else{
+                break;
+            }
+        }
+
+
+        screenNumber = screenNumber + decimalPart;
+
+        if(wholeLength > 9){
+            if(screenNumber[0] === '-' && wholeLength === 10){
+                screen.style.fontSize = '75px'
+                screen.style.marginTop = '35px'
+            }else{
+                screen.style.fontSize = '110px'
+                screen.style.marginTop = '0px' 
+                screenNumber = scienticNotation(wholePart); 
+            }
+
+        }else if(wholeLength > 6){
+            screen.style.fontSize = '' + 110 - (wholeLength-6)*10 + 'px'
+            screen.style.marginTop = '' + (wholeLength-6)*10 + 'px'
+        }else{
+            screen.style.fontSize = '110px'
+            screen.style.marginTop = '0px' 
+        }
+
+
+       
+        return screenNumber;
+    }
+
+    function scienticNotation(number){
+        let screenNumber = ''
+        for(let i = 0; i < 4; i++){
+            if(number[i]){
+                screenNumber = screenNumber + number[i];
+                if(i===0 && number[i] !== '-' || i === 1){
+                    screenNumber = screenNumber + '.'
+                }
+            }   
+        }
+        screenNumber = screenNumber + 'e' + number.length;
+
+        return screenNumber;
+    }
+
+    function indexOfPoint(number){
+        len = number.length;
+        for(let i = 0; i < len; i++){
+            if(number[i] === '.'){
+                return i;
+            }
+        }
+        return false;
+    }
 
     function isPoint(){
         let isThere
@@ -157,7 +260,6 @@ addEventListener('DOMContentLoaded', function(){
         }else{
             isThere = number1.includes('.');
         }
-        console.log(isThere)
         return isThere;
     }
 
@@ -249,7 +351,6 @@ addEventListener('DOMContentLoaded', function(){
     function changePreviousOperator(ID){
         if(operator){
             let prevOperator = document.getElementById(operator);
-            console.log(prevOperator)
             if(!(prevOperator.id === ID)){
                 prevOperator.style.color = 'white';
                 prevOperator.style.backgroundColor = '#4765ff'
