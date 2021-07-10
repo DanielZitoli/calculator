@@ -2,12 +2,20 @@ addEventListener('DOMContentLoaded', function(){
 
 
     let number1 = '0';
-    let Num1isNegative = false;
     let number2 = '';
-    let Num2isNegative = false;
     let operator = '';
     let equalLastPressed = false;
+    //equalLastPressed is set to true whenever the equal button is presed, and to false when an operator is pressed 
+    //or when clear is pressed (which happens when a number or point ispressed while equalLatsPressed is true)
+    
+    let displayCalculation = false;
+    //displaycalculation is set to false whenever 'clear' is clicked or when number2 is true, and it set to true whenever
+    //the calculate function is called
+
     let justCalculated = 0;
+    //justCalculated stops the delete button from deleting a calculated answer, it
+    //is set to 2 when the calculate function is called, decremented every time a button is clicked, 
+    // ad incremented everytime delete is clicked, when justcalculated is more than 0.
 
     let screen = document.querySelector('#screen');
 
@@ -15,10 +23,9 @@ addEventListener('DOMContentLoaded', function(){
     function recordClick(id){
         if(id === 'clear'){
             equalLastPressed = false;
+            displayCalculation = false
             number1 = '0';
-            Num1isNegative = false;
             number2 = '';
-            Num2isNegative = false;
             operator = '';
             
         }else if(id === 'delete'){
@@ -53,7 +60,7 @@ addEventListener('DOMContentLoaded', function(){
             if(number2){
                 calculate(number1, number2);
             }else if(operator){
-                calculate(number1, number1, true);
+                calculate(number1, number1);
             }else{
                 //nothing
             }
@@ -79,12 +86,21 @@ addEventListener('DOMContentLoaded', function(){
             if(!(isPoint())){
                 if(operator){
                     if(number2){
-                        number2 = number2 + '.';
+                        if(howManyNumbers(number2) < 9){
+                            number2 = number2 + '.';
+                        }
                     }else{
                         number2 = '0.';
                     }
                 }else{
-                    number1 = number1 + '.';
+                    if(equalLastPressed){
+                        recordClick('clear');
+                        recordClick('point');
+                    }else{
+                        if(howManyNumbers(number1) < 9){
+                            number1 = number1 + '.';
+                        }
+                    }
                 }
             }
         }else if(id === 'add' || id === 'minus' || id === 'multiply' || id === 'divide'){
@@ -100,7 +116,9 @@ addEventListener('DOMContentLoaded', function(){
                 }else if(number2 === '-0'){
                     number2 = '-' + id
                 }else{
-                    number2 = number2 + id;
+                    if(howManyNumbers(number2) < 9){
+                        number2 = number2 + id;
+                    }
                 }
             }else{
                 if(number1 === '0'){
@@ -111,23 +129,20 @@ addEventListener('DOMContentLoaded', function(){
                     recordClick('clear');
                     recordClick(id);
                 }else{
-                    number1 = number1 + id;
+                    if(howManyNumbers(number1) < 9){
+                        number1 = number1 + id;
+                    }
                 }
             }
         }
         if(justCalculated){justCalculated--};
+        if(number2){displayCalculation = false}
         updateScreen();
     }
 
-    function calculate(Num1, Num2, mode = false){
+    function calculate(Num1, Num2){
         Num1 = parseFloat(Num1);
-        if(Num1isNegative){Num1 * -1};
         Num2 = parseFloat(Num2);
-        if(mode){
-            if(Num1isNegative){Num2 * -1};
-        }else{
-            if(Num2isNegative){Num2 * -1};
-        }
         
         let answer;
         if(operator === 'add'){
@@ -140,12 +155,11 @@ addEventListener('DOMContentLoaded', function(){
             answer = Num1 * Num2;
         }
 
-        number1 = answer;
-        Num1isNegative = (answer < 0) ? true : false; 
+        number1 = answer.toString();
         number2 = '';
-        Num2isNegative = false
         operator = '';
         justCalculated = 2;
+        displayCalculation = true;
     }   
 
 
@@ -155,22 +169,6 @@ addEventListener('DOMContentLoaded', function(){
     }
 
     function displayNumber(number){
-        //pointIsAt = (indexOfPoint(number)) ? number.indexOf('.') : false;
-        //startNumber = (number[0] === '-') ? 1 : 0
-        
-        //number = parseFloat(number);
-        //number.toFixed(4);
-        //number.toString();
-        
-        //console.log(number)
-        
-        
-        //wholePart = pointIsAt ? number.substring(0, pointIsAt) : number;
-        //decimalPart = pointIsAt ? number.substring(pointIsAt) : '';
-
-
-        number = parseFloat(number);
-        number = number.toFixed(4);
         number = number.toString();
         let wholePart = '', decimalPart = '', pointFound = false;
         for(let i = 0; i < number.length; i++){
@@ -182,7 +180,7 @@ addEventListener('DOMContentLoaded', function(){
             }
         }
         wholeLength = wholePart.length;
-        console.log(wholeLength);
+
        
         screenNumber = '';
 
@@ -193,20 +191,28 @@ addEventListener('DOMContentLoaded', function(){
                 screenNumber = screenNumber + ',';
             }
         }
-        
-        while(true){
-            if(decimalPart[decimalPart.length-1] === '.' || decimalPart[decimalPart.length-1] === '0'){
-                decimalPart = decimalPart.substring(0, decimalPart.length-1);
-            }else{
-                break;
+
+        if(displayCalculation && decimalPart){
+            decimalPart = parseFloat(decimalPart);
+            decimalPart = decimalPart.toFixed(9-wholeLength);
+
+            while(true){
+                if(decimalPart[decimalPart.length-1] === '.' || decimalPart[decimalPart.length-1] === '0'){
+                    decimalPart = decimalPart.substring(0, decimalPart.length-1);
+                }else{
+                    break;
+                }
             }
+            decimalPart = decimalPart.substring(1)
         }
+        decimalLength = (decimalPart)? decimalPart.length-1 : 0;
 
 
         screenNumber = screenNumber + decimalPart;
 
-        if(wholeLength > 9){
-            if(screenNumber[0] === '-' && wholeLength === 10){
+        console.log(wholeLength + '-' + decimalLength)
+        if(wholeLength + decimalLength > 9){
+            if(screenNumber[0] === '-' && wholeLength + decimalLength === 10){
                 screen.style.fontSize = '75px'
                 screen.style.marginTop = '35px'
             }else{
@@ -215,9 +221,9 @@ addEventListener('DOMContentLoaded', function(){
                 screenNumber = scienticNotation(wholePart); 
             }
 
-        }else if(wholeLength > 6){
-            screen.style.fontSize = '' + 110 - (wholeLength-6)*10 + 'px'
-            screen.style.marginTop = '' + (wholeLength-6)*10 + 'px'
+        }else if(wholeLength + decimalLength > 6){
+            screen.style.fontSize = '' + 110 - (wholeLength + decimalLength -6)*10 + 'px'
+            screen.style.marginTop = '' + (wholeLength + decimalLength -6)*10 + 'px'
         }else{
             screen.style.fontSize = '110px'
             screen.style.marginTop = '0px' 
@@ -233,14 +239,24 @@ addEventListener('DOMContentLoaded', function(){
         for(let i = 0; i < 4; i++){
             if(number[i]){
                 screenNumber = screenNumber + number[i];
-                if(i===0 && number[i] !== '-' || i === 1){
+                if(i===0 && number[0] !== '-' || i === 1 && number[0] === '-'){
                     screenNumber = screenNumber + '.'
                 }
             }   
         }
+        if(number[0] === '-'){screenNumber = screenNumber + number[5]};
         screenNumber = screenNumber + 'e' + number.length;
-
         return screenNumber;
+    }
+
+    function howManyNumbers(number){
+        let total = 0;
+        for(let i = 0; i < number.length; i++){
+            if(number[i] !== '-' && number[i] !== '.'){
+                total++;
+            }
+        }
+        return total;
     }
 
     function indexOfPoint(number){
