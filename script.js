@@ -50,8 +50,7 @@ addEventListener('DOMContentLoaded', function(){
                     }else if(number1.length === 1){
                         number1 = '0';
                     }else{
-                        number1 = number1.substr(0, number1.length-1)
-                        console.log('hi')
+                        number1 = number1.substr(0, number1.length-1);
                     }
                 }
             }else{justCalculated++}
@@ -169,6 +168,7 @@ addEventListener('DOMContentLoaded', function(){
     }
 
     function displayNumber(number){
+        if(number === 'Infinity' || number === 'NaN'){return number};
         number = number.toString();
         let wholePart = '', decimalPart = '', pointFound = false;
         for(let i = 0; i < number.length; i++){
@@ -207,10 +207,8 @@ addEventListener('DOMContentLoaded', function(){
         }
         decimalLength = (decimalPart)? decimalPart.length-1 : 0;
 
-
         screenNumber = screenNumber + decimalPart;
 
-        console.log(wholeLength + '-' + decimalLength)
         if(wholeLength + decimalLength > 9){
             if(screenNumber[0] === '-' && wholeLength + decimalLength === 10){
                 screen.style.fontSize = '75px'
@@ -322,6 +320,46 @@ addEventListener('DOMContentLoaded', function(){
     });
 
 
+
+    //Keyboard Support
+    let pressActive = false
+    window.addEventListener('keydown', event => {
+        if(!pressActive){
+            pressActive = true;
+            let keyID = keyToID(event.key);
+            if(keyID){
+                let buttonKey = document.getElementById(keyID);
+                changeColor(buttonKey, 'on');
+                changeTransition(buttonKey, false);
+            }
+        }
+    });
+    window.addEventListener('keyup', event => {
+        pressActive = false
+        let keyID = keyToID(event.key);
+        console.log(event)
+        if(keyID){
+            let buttonKey = document.getElementById(keyID);
+            changeColor(buttonKey, 'off');
+            changeTransition(buttonKey, true);
+            recordClick(keyID);
+        }
+    });
+
+    function keyToID(key){
+        if(key === 'c'){return 'clear';}
+        else if(key === 'Shift'){return 'plusminus';}
+        else if(key === 'Backspace'){return 'delete';}
+        else if(key === '/'){return 'divide';}
+        else if(key === 'x'){return 'multiply';}
+        else if(key === '-'){return 'minus';}
+        else if(key === '='){return 'add';}
+        else if(key === 'Enter'){return 'equal';}
+        else if(key === '.'){return 'point';}
+        else if(!isNaN(key)){return key;}
+        else{return ''}
+    }
+
     function changeColor(Button, mode){
         let ID = Button.id;
         
@@ -358,7 +396,7 @@ addEventListener('DOMContentLoaded', function(){
 
     function changeTransition(button, mode){
         if(mode){
-        button.classList.add('transition');
+            button.classList.add('transition');
         }else{
             button.classList.remove('transition');
         }
