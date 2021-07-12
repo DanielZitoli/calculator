@@ -226,8 +226,6 @@ addEventListener('DOMContentLoaded', function(){
             screen.style.fontSize = '110px'
             screen.style.marginTop = '0px' 
         }
-
-
        
         return screenNumber;
     }

@@ -1,15 +1,19 @@
 body{
     background-color: #ddd;
+    display: flex;
+    flex-wrap: wrap;
 }
 #calculator{
     width: 500px;
     height: 750px;
     background-color: #111;
-    margin: 20px auto;
+    margin-top: 20px;
     border-radius: 50px;
     display: flex;
     flex-wrap: wrap;
-   
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
     justify-content: center;
 }
 
@@ -114,5 +118,46 @@ body{
     #equal{
     grid-area: equal;
     width: 190px;
+    border-radius: 46px;
+    margin: 0px auto;
     }
+
+/*
+#keyboard-container{
+    display: grid;
+    grid-template-rows: 1fr 5fr;
+    width: 300px;
+    height: 600px;
+    background-color: blue;
+    position: fixed;
+    right: 80px;
+    top: 100px;
+}
+
+
+#keyboard-title{
+    position: absolute;
+    top: 0;
+    width: 250px;
+    height: 75px;
+    margin: auto;
+    border: 2px solid;
+    border-radius: 20px;
+    text-align: center;
+
+}
+    #keyboard-title>p{
+        font-size: 30px;
+        color: black;
+        margin: 0px auto;
+    }
+#controls{
+
+
+    transition: opacity linear;
+}
+#controls > p{
+
+}
+*/
     
